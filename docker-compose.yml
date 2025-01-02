@@ -1,0 +1,29 @@
+services:
+  db:
+    image: mysql:5.7
+    container_name: mysql_container
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: user_db
+      MYSQL_USER: root
+      MYSQL_PASSWORD: password
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - app-network
+    ports:
+      - "3306:3306"
+
+  backend:
+    build: ./backend
+    container_name: python_backend
+    ports:
+      - "8881:8881"
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
